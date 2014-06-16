@@ -3,6 +3,10 @@
 use strict;
 use warnings;
 
+my $less = "less";
+
+$less = "cdiff -c always | less -R" if -x "/usr/local/bin/cdiff";
+
 my $file = shift;
 
 die "Usage: $0 file\n" unless $file and -r $file;
@@ -10,5 +14,5 @@ die "Usage: $0 file\n" unless $file and -r $file;
 my @commits = map { chomp; s/commit //; $_ } grep /^commit /, `git log $file`;
 
 for (@commits) {
-    system "git show $_ $file|less";
+    system "git show $_ $file | $less";
 }
