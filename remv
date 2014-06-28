@@ -1,0 +1,14 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+my $re = shift @ARGV;
+$re = eval "sub { \$_[0] =~ $re; \$_[0] }";
+
+foreach my $file (@ARGV) {
+    my $new = $file;
+    $new = $re->($new);
+    print "$file -> $new\n";
+    rename $file, $new;
+}

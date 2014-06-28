@@ -1,0 +1,12 @@
+#!/usr/bin/env perl
+
+my $page = shift or die "Usage: $0 [dr ttv page number]\n";
+
+my $dump = `lynx -dump http://www.dr.dk/cgi-bin/fttx1.exe/$page`;
+
+$dump =~ s/References.*//s;
+$dump =~ s/\[.*?\]//g;
+$dump =~ s/^\s*?\n//;
+$dump =~ s/\n\s*$/\n/;
+
+print $dump;

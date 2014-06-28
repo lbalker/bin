@@ -1,0 +1,13 @@
+#!/usr/bin/env perl
+
+use Date::Calc qw/Delta_Days/;
+
+die "usage: $0 2005-10-08 2005-06-22\n" unless @ARGV == 2;
+
+my ($date1, $date2) = @ARGV;
+
+my @date1 = split /-/, $date1;
+my @date2 = split /-/, $date2;
+
+print Delta_Days(@date1, @date2);
+print "\n";

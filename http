@@ -1,0 +1,58 @@
+#!/usr/bin/env perl
+
+# Serve current working directory on port 3000
+
+eval {
+    require local::lib;
+};
+
+use Mojolicious::Lite;
+use Mojolicious::Static;
+use Cwd;
+my $cwd = getcwd;
+
+my $static = Mojolicious::Static->new( paths => [ $cwd ]);
+
+sub dir {
+    my ($self, $path) = @_;
+    opendir my $dh, "$cwd/$path";
+    my @files = readdir $dh;
+    closedir $dh;
+    my $text ="";
+    for my $file (sort @files) {
+        next if $file eq '.' or $file =~ /^(?:\._)?.DS_Store$/;
+        next if $path eq '' and $file eq '..';
+        my $slash = -d "$cwd/$path/$file" ? "/" : "";
+        $text .= "<b>" if $file =~ /(mp4|mov)$/i;
+        $text .= "<a href='$file$slash'>$file$slash</a><br/>";
+        $text .= "</b>" if $file =~ /(mp4|mov)$/;
+    }
+    
+    $self->render(text => "$text");
+}
+
+get '/' => sub {
+    my $self = shift;
+    dir($self, "");
+};
+
+get '/*meh' => sub {
+    my $self = shift;
+    my $path = $self->param('meh');
+    $path =~ s/\.\.//g;
+
+    if (!-e "$cwd/$path") {
+        $self->render(text => "no!");
+    }
+    elsif (-d "$cwd/$path") {
+        dir($self, $path);
+    }
+    else {
+        $static->serve($self, $path);
+        $self->rendered;
+    }
+};
+
+app->secrets(['meh']);
+app->log->level('info');
+app->start('daemon');

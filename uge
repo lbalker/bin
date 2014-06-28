@@ -1,0 +1,32 @@
+#!/usr/bin/env perl
+
+use DateTime;
+
+my $month = shift || DateTime->now->month;
+
+my $dt = DateTime->new(
+    year => DateTime->now->year,
+    month => $month,
+);
+
+my $first = 1;
+my $week = '';
+my @weeks;
+
+while ($dt->month == $month) {
+    if ($dt->dow < 6) {
+        $week .= "(+\n" if $dt->dow == 1 or $first;
+        $first = 0;
+        $week .= sprintf " ; %d/%d\n", $dt->day, $dt->month;
+        if ($dt->dow == 5) {
+            $week .= ")\n";
+            push @weeks, $week;
+            $week = '';
+        }
+    }
+    $dt->add( days => 1 );
+}
+
+$week =~ s/([^\)])$/$1\n\)/;
+
+print "(+\n",@weeks, $week, ")\n";

@@ -1,0 +1,4 @@
+#!/bin/sh
+sudo tarsnap --list-archives | sort
+echo "";
+echo xargs -n 1 sudo tarsnap -d -f

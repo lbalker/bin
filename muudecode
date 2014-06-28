@@ -1,0 +1,15 @@
+#!/usr/bin/env perl
+
+$file = '';
+
+while (<>) {
+	if (/^begin / .. /^end/) {
+		$file .= $_;
+	}
+	if (/^end$/) {
+		open UU, "| uudecode";
+		print UU $file;
+		close UU;
+		$file = '';
+	}
+}

@@ -1,0 +1,16 @@
+#!/usr/bin/env perl
+
+use v5.14.0;
+use DateTime;
+
+sub now { 
+    my $tz = shift;
+    my $now = DateTime->now( time_zone => $tz );
+    
+    say $now->time_zone_short_name, ": ", $now->ymd, " ", $now->hms;
+}
+
+now "Europe/Copenhagen";
+now "Europe/London";
+now "America/New_York";
+now "America/Vancouver";

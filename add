@@ -1,0 +1,19 @@
+#!/usr/bin/env perl
+
+use Regexp::Common qw/number/;
+
+if (@ARGV == 0 || $ARGV[0] eq '-') {
+    @ARGV = <>;
+    chomp @ARGV;
+}
+
+my $sum = 0;
+@ARGV = grep { /$RE{num}{real}/ } @ARGV;
+
+foreach (@ARGV) {
+   $sum += $_;
+}
+
+print join " + ", @ARGV;
+print " = $sum (", (sprintf "%.1f", $sum / @ARGV), ")\n";
+

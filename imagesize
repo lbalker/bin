@@ -1,0 +1,24 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use File::Copy;
+
+my %cmd = (h => "height", w => "width");
+
+my $size = shift;
+my $cmd;
+if ($size =~ s/^([hw])(\d+)$/$2/) {
+    $cmd = $cmd{$1};
+}
+else {
+    die "usage: $0 [hw]<size> <images...>";
+}
+my %formats = ( png => [ 'png', '' ], jpg => [ 'jpeg', '-quality 93' ]);
+
+foreach my $image (@ARGV) {
+    $image =~ /\.(\w+)$/;
+    my ($format, $opt) = @{ $formats{$1} };
+    unless ($format) { warn $image; next; }
+    rename($image, "$image.bak");
+    system "${format}topnm --quiet '$image.bak' | pnmscale -$cmd $size | pnmto${format} $opt > '$image'";
+}

@@ -1,0 +1,17 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+foreach my $file (@ARGV) {
+    open FOO, $file or die;
+    $_ = <FOO>;
+    close FOO;
+    if (/:name(\d+):/ && /:name\d+:(.{$1})/) {
+        my $new = lc $1;
+        $new =~ s/\.\w+$/.torrent/;
+        rename $file, $new;
+        print "$new\n";
+    }
+}
+

@@ -1,0 +1,17 @@
+#!/usr/bin/env perl
+
+use v5.10;
+use IMDB::Film; 
+use strict;
+use warnings;
+
+while (<>) {
+    chomp; 
+    my $i = IMDB::Film->new(clear_cache => 1, crit => $_, host => "akas.imdb.com");
+    
+    say "<h1>" 
+        . $i->title . " (" . $i->year . ", " . $i->rating . ")" . qq{</h1>}
+        . qq{<img src="} . $i->cover . qq{">}
+        . qq{<p>} . $i->storyline . "</p>";
+}
+

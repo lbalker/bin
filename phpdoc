@@ -1,0 +1,46 @@
+#!/usr/local/bin/perl -w
+
+# On FreeBSD, relies on the following ports:
+#  www/lynx
+#  lang/php_doc
+
+use strict;
+
+#my $dir = "/usr/local/share/doc/php-en";
+my $dir = "/home/lbr/ardbeg/packages/phpdocs";
+
+if (@ARGV) { 
+	opendir DIR, $dir;
+	my @files = grep /html$/, readdir DIR;
+	closedir DIR;
+	my @show = ();
+
+	for (@ARGV) {
+		my $pat = $_;
+		$pat =~ s/_/-/g;
+		push @show, grep { /^function.$pat/ } @files;
+	}
+
+	if (@show == 0) {
+		die "no matches for @ARGV\n";
+	}
+	elsif (@show == 1) {
+		system "lynx $dir/$show[0]";
+	}
+	else {
+		open LYNX, "| lynx -stdin";
+		print LYNX "<html><body><p><ol>";
+		for (sort @show) {
+			my $file = $_;
+			s/^function.//;
+			s/.html$//;
+			s/-/_/g;
+			print LYNX qq{<li><a href="$dir/$file">$_</a></li>};
+		}
+		print LYNX "</ol></p></body></html>";
+		close LYNX;
+	}
+}
+else {
+ 	system "lynx $dir/index.html";
+}

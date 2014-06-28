@@ -1,0 +1,23 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+my $moms = 1;
+my $ttv = `/home/lbr/bin/ttv 551/1` . `/home/lbr/bin/ttv 551/2`;
+my $val = shift or die "usage: $0 [-m] EUR|USD|... [amount]";
+if ($val eq '-m') {
+    $val = shift;
+    $moms = 1.25;
+}
+    
+my $amount = shift // 1;
+
+if ($ttv =~ /\s+$val\s+([\d,]+)\s+/i) {
+   my $rate = $1;
+   $rate =~ s/,/./;
+   $rate /= 100;
+   printf "%f\n", $rate * $amount * $moms;
+}
+else {
+   print "No data for $val\n";
+}

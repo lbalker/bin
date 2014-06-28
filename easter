@@ -1,0 +1,25 @@
+#!/usr/bin/env perl
+
+use Date::Calc qw/Easter_Sunday Day_of_Week Add_Delta_Days/;
+
+my $year = shift || ((localtime)[5]+1900);
+
+my @easter = Easter_Sunday($year);
+
+print_date("1. nytårsdag", 	 $year,1,1);
+print_date("Skærtorsdag", 	 Add_Delta_Days(@easter, -3));
+print_date("Langfredag", 	 Add_Delta_Days(@easter, -2));
+print_date("2. påskedag", 	 Add_Delta_Days(@easter, 1));
+print_date("St. Bededag", 	 Add_Delta_Days(@easter, 26));
+print_date("Kr. Himmelfartsdag", Add_Delta_Days(@easter, 39));
+print_date("2. pinsedag", 	 Add_Delta_Days(@easter, 50));
+print_date("Grundlovsdag", 	 $year, 6, 5);
+print_date("Juleaften", 	 $year, 12, 24);
+print_date("1. juledag", 	 $year, 12, 25);
+print_date("Nytår", 		 $year, 12, 31);
+
+sub print_date {
+    my ($str, @ymd) = @_;
+    my $day = (qw/man tirs ons tors fre lør søn/)[Day_of_Week(@ymd)-1];
+    printf("%04d-%02d-%02d %-7s $str\n", @ymd, $day . "dag"); 
+}
