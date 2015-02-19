@@ -1,13 +1,14 @@
-#!/usr/local/bin/perl -w
+#!/usr/bin/env perl
 
 # On FreeBSD, relies on the following ports:
 #  www/lynx
 #  lang/php_doc
 
 use strict;
+use warnings;
 
 #my $dir = "/usr/local/share/doc/php-en";
-my $dir = "/home/lbr/ardbeg/packages/phpdocs";
+my $dir = "/home/lbr/usr/php/php-chunked-xhtml";
 
 if (@ARGV) { 
 	opendir DIR, $dir;
