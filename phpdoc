@@ -4,6 +4,8 @@
 #  www/lynx
 #  lang/php_doc
 
+# or get the doc from http://php.net/get/php_manual_en.tar.gz/from/a/mirror 
+
 use strict;
 use warnings;
 
