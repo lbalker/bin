@@ -1,0 +1,30 @@
+#!/usr/bin/env perl
+
+if (@ARGV == 0 || $ARGV[0] eq '-') {
+    @ARGV = <>;
+    chomp @ARGV;
+}
+
+my @sum;
+
+foreach (@ARGV) {
+    if (/^[0-9:]+$/) {
+        my @time = split /:/;
+        s/^0// for @time;
+        for my $i (0..$#time) {
+            $sum[$#time - $i] += $time[$i];
+        }
+    }
+}
+
+my @max = (60,60,24,365);
+
+for my $i (0..$#sum) {
+    while ($sum[$i] >= $max[$i]) {
+        $sum[$i] -= $max[$i];
+        $sum[$i + 1] += 1;
+    }
+}
+
+print join ":", map { sprintf "%02d", $_ } reverse @sum;
+print "\n";

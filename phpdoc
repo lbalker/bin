@@ -9,8 +9,8 @@
 use strict;
 use warnings;
 
-#my $dir = "/usr/local/share/doc/php-en";
-my $dir = "/home/lbr/usr/php/php-chunked-xhtml";
+my $dir = "/usr/share/doc/php-doc/html";
+#my $dir = "/home/lbr/usr/php/php-chunked-xhtml";
 
 if (@ARGV) { 
 	opendir DIR, $dir;

@@ -1,0 +1,4 @@
+#!/usr/bin/env perl
+use v5.20;
+
+say join "", map { chr hex $_ } @ARGV
