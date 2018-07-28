@@ -1,4 +1,4 @@
 #!/bin/sh
-rsync -a --delete -e ssh /home/* 192.168.0.8:/home/lbr/backup
+rsync -a --delete -e ssh /home/* 192.168.1.222:/mnt/space/lbr/backup
 
 #rsync -a --delete -e ssh --exclude=lbr/p/\* /home/* lagavulin:/home/lbr/backup
