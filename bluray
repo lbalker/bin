@@ -4,24 +4,31 @@ use v5.10;
 use strict;
 use warnings;
 
-use LWP::Simple;
-
-use Data::Dumper;
+use Mojo::DOM;
 use Date::Calc qw/Decode_Date_US/;
 
-my $page = get "http://bluray.highdefdigest.com/releasedates.html";
+my $page = `wget -qO- http://bluray.highdefdigest.com/releasedates.html`;
 die "Server busy\n" unless $page;
+my $dom = Mojo::DOM->new($page);
 
-my @lines = split /^/, $page;
+$dom->at('section.release-dates-upcoming')->find('div.hdd-grid-description')->each(sub {
+	my $title = $_->at('.hdd-grid-title')->text;
+	my $date  = $_->at('.hdd-grid-date')->text;
+	my ($y, $m, $d) = Decode_Date_US($date);
+	$date = sprintf "%d-%02d-%02d", $y, $m, $d;
+	say "$date $title";
+});
+
 my $date;
-for (@lines) {
-    if (/<em class="date">(.*?)<\/em>/) {
-        my ($y,$m,$d) = Decode_Date_US($1);
-        $date = sprintf "%d-%02d-%02d", $y,$m,$d;
-    }
-    if ($date and (/<span>(.*?)<\/span>/ or m,<a href=".*?">(.*?)</a>,)) {
-        say "$date $1";
-    }
-        
-    last if /Release Dates (Postponed|Pending)/;
-}
+my $list = $dom->at('#releasedate-list')->children->each(sub {
+	if ($_->attr('class') =~ /hdd-grid-list-date-separator/) {
+		my ($y, $m, $d) = Decode_Date_US($_->text);
+		$date = sprintf "%d-%02d-%02d", $y, $m, $d;
+	}
+	elsif ($_->attr('class') =~ /row/) {
+		$_->find('a')->each(sub {
+			my $title = $_->text;
+			say "$date $title";
+        });
+	}
+});
