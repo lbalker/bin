@@ -1,0 +1,34 @@
+#!/usr/bin/env perl
+use v5.10;
+use strict;
+use warnings;
+
+foreach my $file (@ARGV) {
+	if (-d $file) {
+		my @rar = `find '$file' -type f -name '*.rar' 2>/dev/null`;
+		my @mkv = `find '$file' -type f -name '*.mkv' 2>/dev/null`;
+		foreach my $rar (@rar) {
+			chomp $rar;
+			say "Unraring $rar";
+			my $unrar = `unrar x '$rar' 2>&1`;
+			if ($? >> 8) {
+				say "\terror: $unrar";
+			}
+		}
+		foreach my $mkv (@mkv) {
+			chomp $mkv;
+			say "Copying $mkv";
+			my $cp = `cp '$mkv' . 2>&1`;
+			if ($? >> 8) {
+				say "\terror: $cp";
+			}
+		}
+	}
+	else {
+		say "Unraring $file";
+		my $unrar = `unrar x $file 2>&1`;
+		if ($? >> 8) {
+			say "\terror: $unrar";
+		}
+	}
+}
