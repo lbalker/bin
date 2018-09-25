@@ -7,16 +7,21 @@ use warnings;
 use Mojo::DOM;
 use Date::Calc qw/Decode_Date_US/;
 
+my $f1 = $ENV{HOME} . "/.bluray1";
+my $f2 = $ENV{HOME} . "/.bluray2";
+
 my $page = `wget -qO- http://bluray.highdefdigest.com/releasedates.html`;
 die "Server busy\n" unless $page;
 my $dom = Mojo::DOM->new($page);
+
+my $output = "";
 
 $dom->at('section.release-dates-upcoming')->find('div.hdd-grid-description')->each(sub {
 	my $title = $_->at('.hdd-grid-title')->text;
 	my $date  = $_->at('.hdd-grid-date')->text;
 	my ($y, $m, $d) = Decode_Date_US($date);
 	$date = sprintf "%d-%02d-%02d", $y, $m, $d;
-	say "$date $title";
+	$output .= "$date $title\n";
 });
 
 my $date;
@@ -28,7 +33,15 @@ my $list = $dom->at('#releasedate-list')->children->each(sub {
 	elsif ($_->attr('class') =~ /row/) {
 		$_->find('a')->each(sub {
 			my $title = $_->text;
-			say "$date $title";
+			$output .= "$date $title\n";
         });
 	}
 });
+
+if ($output) {
+	rename $f1, $f2;
+	open my $out, ">", $f1;
+	print $out $output;
+	close $out;
+	system qq{diff $f1 $f2 | grep '>'};
+}
