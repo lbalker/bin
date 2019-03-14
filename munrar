@@ -10,7 +10,7 @@ foreach my $file (@ARGV) {
 		foreach my $rar (@rar) {
 			chomp $rar;
 			say "Unraring $rar";
-			my $unrar = `unrar x '$rar' 2>&1`;
+			my $unrar = `unrar x -o+ '$rar' 2>&1`;
 			if ($? >> 8) {
 				say "\terror: $unrar";
 			}
