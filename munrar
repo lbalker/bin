@@ -3,17 +3,22 @@ use v5.10;
 use strict;
 use warnings;
 
+sub unrar {
+	my $file = shift;
+	say "Unraring $file";
+	my $unrar = `unrar x -o+ '$file' 2>&1`;
+	if ($? >> 8) {
+		say "\terror: $unrar";
+	}
+}
+
 foreach my $file (@ARGV) {
 	if (-d $file) {
 		my @rar = `find '$file' -type f -name '*.rar' 2>/dev/null`;
 		my @mkv = `find '$file' -type f -name '*.mkv' 2>/dev/null`;
 		foreach my $rar (@rar) {
 			chomp $rar;
-			say "Unraring $rar";
-			my $unrar = `unrar x -o+ '$rar' 2>&1`;
-			if ($? >> 8) {
-				say "\terror: $unrar";
-			}
+			unrar $rar;
 		}
 		foreach my $mkv (@mkv) {
 			chomp $mkv;
@@ -25,10 +30,6 @@ foreach my $file (@ARGV) {
 		}
 	}
 	else {
-		say "Unraring $file";
-		my $unrar = `unrar x $file 2>&1`;
-		if ($? >> 8) {
-			say "\terror: $unrar";
-		}
+		unrar $file;
 	}
 }
