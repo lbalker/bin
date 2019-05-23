@@ -3,10 +3,14 @@ use v5.10;
 use strict;
 use warnings;
 
+my %seen = (from => 1);
 sub unrar {
 	my $file = shift;
-	say "Unraring $file";
 	my $unrar = `unrar x -o+ '$file' 2>&1`;
+	while ($unrar =~ /^Extracting\s*(\S+)/mg) {
+		next if $seen{$1}++;
+		say $1;
+	}
 	if ($? >> 8) {
 		say "\terror: $unrar";
 	}
@@ -22,8 +26,10 @@ foreach my $file (@ARGV) {
 		}
 		foreach my $mkv (@mkv) {
 			chomp $mkv;
-			say "Copying $mkv";
+			my $f = $mkv;
+			$f =~ s/.*\///;
 			my $cp = `cp '$mkv' . 2>&1`;
+			say $f;
 			if ($? >> 8) {
 				say "\terror: $cp";
 			}
