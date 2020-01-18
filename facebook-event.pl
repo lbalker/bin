@@ -9,7 +9,7 @@
 
 BEGIN { $ENV{MOJO_LOG_LEVEL} = 'fatal'; }
 
-use v5.10;
+use v5.20;
 use strict;
 use warnings;
 
@@ -31,7 +31,7 @@ any '/' => sub {
 	my $res = $ua->get(sprintf $fburl, $uid, $key)->result;
  
 	if ($res->is_success) {
-		my $vcal = $res->body;
+		my $vcal = $res->text;
 		my $output = '';
 		my $event = '';
 		foreach my $line (split /\r?\n/, $vcal) {
