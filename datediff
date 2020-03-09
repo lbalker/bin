@@ -2,9 +2,12 @@
 
 use Date::Calc qw/Delta_Days/;
 
-die "usage: $0 2005-10-08 2005-06-22\n" unless @ARGV == 2;
+die "usage: $0 2005-06-22 [2005-10-08]\n" unless @ARGV == 2 or @ARGV == 1;
 
 my ($date1, $date2) = @ARGV;
+
+my @today = (localtime)[5,4,3];
+$date2 ||= sprintf "%04d-%02d-%02d", $today[0] + 1900, $today[1] + 1, $today[2];
 
 my @date1 = split /-/, $date1;
 my @date2 = split /-/, $date2;
