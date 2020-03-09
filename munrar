@@ -21,10 +21,12 @@ foreach my $file (@ARGV) {
 		my @rar = `find '$file' -type f -name '*.rar' 2>/dev/null`;
 		my @mkv = `find '$file' -type f -name '*.mkv' 2>/dev/null`;
 		foreach my $rar (@rar) {
+			next if $rar =~ m,\bSample\b,;
 			chomp $rar;
 			unrar $rar;
 		}
 		foreach my $mkv (@mkv) {
+			next if $mkv =~ m,\bSample\b,;
 			chomp $mkv;
 			my $f = $mkv;
 			$f =~ s/.*\///;
