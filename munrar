@@ -16,28 +16,38 @@ sub unrar {
 	}
 }
 
+sub handle_mkv {
+    my $mkv = shift;
+    return if $mkv =~ m,\bSample\b,i;
+    chomp $mkv;
+    my $f = $mkv;
+    $f =~ s/.*\///;
+    my $cp = `cp '$mkv' . 2>&1`;
+    say $f;
+    if ($? >> 8) {
+        say "\terror: $cp";
+    }
+}
+sub handle_rar {
+    my $rar = shift;
+    return if $rar =~ m,\bSample\b,;
+    chomp $rar;
+    unrar $rar;
+}
+    
 foreach my $file (@ARGV) {
 	if (-d $file) {
 		my @rar = `find '$file' -type f -name '*.rar' 2>/dev/null`;
 		my @mkv = `find '$file' -type f -name '*.mkv' 2>/dev/null`;
 		foreach my $rar (@rar) {
-			next if $rar =~ m,\bSample\b,;
-			chomp $rar;
-			unrar $rar;
+            handle_rar($rar);
 		}
 		foreach my $mkv (@mkv) {
-			next if $mkv =~ m,\bSample\b,;
-			chomp $mkv;
-			my $f = $mkv;
-			$f =~ s/.*\///;
-			my $cp = `cp '$mkv' . 2>&1`;
-			say $f;
-			if ($? >> 8) {
-				say "\terror: $cp";
-			}
+            handle_mkv($mkv);
 		}
 	}
 	else {
-		unrar $file;
+		unrar($file) if $file =~ /\.rar$/;
+		handle_mkv($file) if $file =~ /\.mkv$/i;
 	}
 }
