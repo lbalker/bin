@@ -1,0 +1,20 @@
+#!/usr/bin/env perl
+
+use v5.20;
+
+use DateTime;
+use POSIX;
+
+my @timers = @ARGV;
+
+for my $timer (@timers) {
+    my @times = split /:/, $timer;
+    unshift @times, 0 while @times < 2;
+    say join "/", @times;
+
+    my $now = DateTime->now;
+    $now->add(hours => $times[0], minutes => $times[1]);
+    my $str =  strftime "%Y%m%d%H%M", localtime $now->epoch;
+
+    system qq{echo notify-send ALERT | at -t $str};
+}
