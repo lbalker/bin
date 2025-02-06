@@ -16,10 +16,13 @@ my @weeks;
 while ($dt->month == $month) {
     if ($dt->dow < 6) {
         $week .= "(+\n" if $dt->dow == 1 or $first;
+#        $week .= "\n" if $dt->dow == 1 or $first;
         $first = 0;
         $week .= sprintf " ; %d/%d\n", $dt->day, $dt->month;
+        #$week .= sprintf "%d/%d\n", $dt->day, $dt->month;
         if ($dt->dow == 5) {
             $week .= ")\n";
+            #$week .= "\n";
             push @weeks, $week;
             $week = '';
         }
@@ -28,5 +31,7 @@ while ($dt->month == $month) {
 }
 
 $week =~ s/([^\)])$/$1\n\)/;
-
+#$week =~ s/([^\)])$/$1\n/;
 print "(+\n",@weeks, $week, ")\n";
+#print @weeks, $week, "\n";
+

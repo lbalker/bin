@@ -6,7 +6,7 @@ use warnings;
 my %seen = (from => 1);
 sub unrar {
 	my $file = shift;
-	my $unrar = `unrar x -o+ '$file' 2>&1`;
+	my $unrar = `unrar x -o+ "$file" 2>&1`;
 	while ($unrar =~ /^Extracting\s*(\S+)/mg) {
 		next if $seen{$1}++;
 		say $1;
@@ -22,7 +22,7 @@ sub handle_mkv {
     chomp $mkv;
     my $f = $mkv;
     $f =~ s/.*\///;
-    my $cp = `cp '$mkv' . 2>&1`;
+    my $cp = `cp "$mkv" . 2>&1`;
     say $f;
     if ($? >> 8) {
         say "\terror: $cp";
@@ -37,8 +37,8 @@ sub handle_rar {
     
 foreach my $file (@ARGV) {
 	if (-d $file) {
-		my @rar = `find '$file' -type f -name '*.rar' 2>/dev/null`;
-		my @mkv = `find '$file' -type f -name '*.mkv' 2>/dev/null`;
+		my @rar = `find "$file" -type f -name '*.rar' 2>/dev/null`;
+		my @mkv = `find "$file" -type f -name '*.mkv' 2>/dev/null`;
 		foreach my $rar (@rar) {
             handle_rar($rar);
 		}
